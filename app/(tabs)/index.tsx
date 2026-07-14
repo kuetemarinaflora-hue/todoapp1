@@ -16,7 +16,12 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>My Lists</Text>
+      <View style={styles.headerRow}>
+  <Text style={styles.title}>My Lists</Text>
+  <TouchableOpacity onPress={() => router.push('/settings')}>
+    <Text style={styles.settingsLink}>Settings</Text>
+  </TouchableOpacity>
+</View>
 
       <FlatList
         data={categories}
@@ -58,6 +63,17 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
+  headerRow: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: 24,
+},
+settingsLink: {
+  fontSize: 15,
+  color: '#2196F3',
+  fontWeight: '600',
+},
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
@@ -67,7 +83,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 24,
     color: '#222',
   },
   card: {
