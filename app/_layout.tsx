@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { TodoProvider } from '@/context/TodoContext';
+import { CategoryProvider } from '@/context/CategoryContext';
 import { AppThemeProvider, useAppTheme } from '@/context/ThemeContext';
 
 function RootLayoutNav() {
@@ -23,9 +24,11 @@ function RootLayoutNav() {
 export default function RootLayout() {
   return (
     <AppThemeProvider>
-      <TodoProvider>
-        <RootLayoutNav />
-      </TodoProvider>
+      <CategoryProvider>
+        <TodoProvider>
+          <RootLayoutNav />
+        </TodoProvider>
+      </CategoryProvider>
     </AppThemeProvider>
   );
 }
