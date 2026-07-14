@@ -1,31 +1,32 @@
 import { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Switch, ScrollView } from 'react-native';
 import { Stack } from 'expo-router';
+import { useAppTheme } from '@/context/ThemeContext';
 
 export default function Settings() {
   const [username, setUsername] = useState('Marina');
   const [email, setEmail] = useState('marina@email.com');
-  const [darkMode, setDarkMode] = useState(false);
+  const { isDark, toggleTheme, colors } = useAppTheme();
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
       <Stack.Screen options={{ title: 'Settings', headerShown: true }} />
 
-      <Text style={styles.sectionLabel}>PROFILE</Text>
+      <Text style={[styles.sectionLabel, { color: colors.subtext }]}>PROFILE</Text>
 
-      <View style={styles.row}>
-        <Text style={styles.rowLabel}>Username</Text>
+      <View style={[styles.row, { backgroundColor: colors.card }]}>
+        <Text style={[styles.rowLabel, { color: colors.text }]}>Username</Text>
         <TextInput
-          style={styles.rowInput}
+          style={[styles.rowInput, { color: colors.subtext }]}
           value={username}
           onChangeText={setUsername}
         />
       </View>
 
-      <View style={styles.row}>
-        <Text style={styles.rowLabel}>Email</Text>
+      <View style={[styles.row, { backgroundColor: colors.card }]}>
+        <Text style={[styles.rowLabel, { color: colors.text }]}>Email</Text>
         <TextInput
-          style={styles.rowInput}
+          style={[styles.rowInput, { color: colors.subtext }]}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -33,11 +34,11 @@ export default function Settings() {
         />
       </View>
 
-      <Text style={styles.sectionLabel}>PREFERENCES</Text>
+      <Text style={[styles.sectionLabel, { color: colors.subtext }]}>PREFERENCES</Text>
 
-      <View style={styles.row}>
-        <Text style={styles.rowLabel}>Dark Mode</Text>
-        <Switch value={darkMode} onValueChange={setDarkMode} />
+      <View style={[styles.row, { backgroundColor: colors.card }]}>
+        <Text style={[styles.rowLabel, { color: colors.text }]}>Dark Mode</Text>
+        <Switch value={isDark} onValueChange={toggleTheme} />
       </View>
     </ScrollView>
   );
@@ -46,14 +47,12 @@ export default function Settings() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
     paddingHorizontal: 20,
     paddingTop: 20,
   },
   sectionLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#888',
     marginTop: 20,
     marginBottom: 8,
   },
@@ -61,7 +60,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#fff',
     paddingHorizontal: 14,
     paddingVertical: 12,
     borderRadius: 10,
@@ -69,11 +67,9 @@ const styles = StyleSheet.create({
   },
   rowLabel: {
     fontSize: 15,
-    color: '#222',
   },
   rowInput: {
     fontSize: 15,
-    color: '#555',
     textAlign: 'right',
     flex: 1,
     marginLeft: 20,

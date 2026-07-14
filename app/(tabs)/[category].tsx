@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, FlatList, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { useTodos } from '@/context/TodoContext';
+import { useAppTheme } from '@/context/ThemeContext';
 
 export default function CategoryScreen() {
   const { category } = useLocalSearchParams<{ category: string }>();
   const [task, setTask] = useState('');
   const { todosByCategory, addTodo, toggleComplete, deleteTodo } = useTodos();
+  const { colors } = useAppTheme();
 
   const todos = todosByCategory[category] || [];
 
@@ -17,13 +19,14 @@ export default function CategoryScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Stack.Screen options={{ title: category, headerShown: true }} />
 
       <View style={styles.inputRow}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: colors.card, color: colors.text, borderColor: colors.border }]}
           placeholder="Add a new task..."
+          placeholderTextColor={colors.subtext}
           value={task}
           onChangeText={setTask}
         />
@@ -34,9 +37,9 @@ export default function CategoryScreen() {
         data={todos}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.todoItem}>
+          <View style={[styles.todoItem, { backgroundColor: colors.card }]}>
             <TouchableOpacity style={styles.todoTextWrapper} onPress={() => toggleComplete(category, item.id)}>
-              <Text style={[styles.todoText, item.completed && styles.todoTextCompleted]}>
+              <Text style={[styles.todoText, { color: colors.text }, item.completed && styles.todoTextCompleted]}>
                 {item.text}
               </Text>
             </TouchableOpacity>
@@ -51,12 +54,12 @@ export default function CategoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5', paddingTop: 20, paddingHorizontal: 20 },
+  container: { flex: 1, paddingTop: 20, paddingHorizontal: 20 },
   inputRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 20 },
-  input: { flex: 1, borderWidth: 1, borderColor: '#ddd', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 10, backgroundColor: '#fff', fontSize: 16 },
-  todoItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 14, marginBottom: 10, backgroundColor: '#fff', borderRadius: 10, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 3, elevation: 2 },
+  input: { flex: 1, borderWidth: 1, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 10, fontSize: 16 },
+  todoItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 14, marginBottom: 10, borderRadius: 10, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 3, elevation: 2 },
   todoTextWrapper: { flex: 1 },
-  todoText: { fontSize: 16, color: '#222' },
+  todoText: { fontSize: 16 },
   todoTextCompleted: { textDecorationLine: 'line-through', color: '#aaa' },
   deleteText: { color: '#e74c3c', fontWeight: '600', marginLeft: 10 },
 });
