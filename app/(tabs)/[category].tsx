@@ -1,31 +1,19 @@
 import { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, FlatList, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, Stack } from 'expo-router';
-
-type Todo = {
-  id: string;
-  text: string;
-  completed: boolean;
-};
+import { useTodos } from '@/context/TodoContext';
 
 export default function CategoryScreen() {
   const { category } = useLocalSearchParams<{ category: string }>();
   const [task, setTask] = useState('');
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const { todosByCategory, addTodo, toggleComplete, deleteTodo } = useTodos();
 
-  const addTodo = () => {
+  const todos = todosByCategory[category] || [];
+
+  const handleAdd = () => {
     if (task.trim() === '') return;
-    const newTodo: Todo = { id: Date.now().toString(), text: task, completed: false };
-    setTodos([...todos, newTodo]);
+    addTodo(category, task);
     setTask('');
-  };
-
-  const toggleComplete = (id: string) => {
-    setTodos(todos.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
-  };
-
-  const deleteTodo = (id: string) => {
-    setTodos(todos.filter((t) => t.id !== id));
   };
 
   return (
@@ -39,7 +27,7 @@ export default function CategoryScreen() {
           value={task}
           onChangeText={setTask}
         />
-        <Button title="Add" onPress={addTodo} />
+        <Button title="Add" onPress={handleAdd} />
       </View>
 
       <FlatList
@@ -47,12 +35,12 @@ export default function CategoryScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.todoItem}>
-            <TouchableOpacity style={styles.todoTextWrapper} onPress={() => toggleComplete(item.id)}>
+            <TouchableOpacity style={styles.todoTextWrapper} onPress={() => toggleComplete(category, item.id)}>
               <Text style={[styles.todoText, item.completed && styles.todoTextCompleted]}>
                 {item.text}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => deleteTodo(item.id)}>
+            <TouchableOpacity onPress={() => deleteTodo(category, item.id)}>
               <Text style={styles.deleteText}>Delete</Text>
             </TouchableOpacity>
           </View>

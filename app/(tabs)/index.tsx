@@ -5,6 +5,7 @@ const categories = [
   { id: 'personal', name: 'Personal', color: '#4CAF50' },
   { id: 'work', name: 'Work', color: '#2196F3' },
   { id: 'shopping', name: 'Shopping', color: '#FF9800' },
+  { id: 'fitness', name: 'Fitness', color: '#E91E63' },
 ];
 
 export default function Home() {
