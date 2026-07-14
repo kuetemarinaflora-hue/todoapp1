@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useTodos } from '@/context/TodoContext';
 import { useAppTheme } from '@/context/ThemeContext';
 import { useCategories } from '@/context/CategoryContext';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Home() {
   const router = useRouter();
@@ -80,10 +81,15 @@ export default function Home() {
               onPress={() => router.push({ pathname: '/[category]', params: { category: item.id } })}
               onLongPress={() => handleLongPress(item.id, item.name)}
             >
-              <View style={styles.cardHeader}>
-                <Text style={[styles.cardText, { color: colors.text }]}>{item.name}</Text>
-                <Text style={[styles.percentText, { color: colors.subtext }]}>{percent}%</Text>
-              </View>
+             <View style={styles.cardHeader}>
+  <View style={styles.cardTitleRow}>
+    <View style={[styles.iconBubble, { backgroundColor: item.color + '22' }]}>
+      <Ionicons name={item.icon as any} size={18} color={item.color} />
+    </View>
+    <Text style={[styles.cardText, { color: colors.text }]}>{item.name}</Text>
+  </View>
+  <Text style={[styles.percentText, { color: colors.subtext }]}>{percent}%</Text>
+</View>
 
               <Text style={[styles.countText, { color: colors.subtext }]}>
                 {total === 0 ? 'No tasks yet' : `${completed}/${total} done`}
@@ -121,4 +127,6 @@ const styles = StyleSheet.create({
   countText: { fontSize: 13, marginBottom: 10 },
   progressTrack: { height: 6, borderRadius: 3, overflow: 'hidden' },
   progressFill: { height: '100%', borderRadius: 3 },
+  cardTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+iconBubble: { width: 32, height: 32, borderRadius: 16, justifyContent: 'center', alignItems: 'center' },
 });

@@ -1,10 +1,17 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type Category = {
   id: string;
   name: string;
   color: string;
+  icon: string;
 };
 
 type CategoryContextType = {
@@ -14,17 +21,36 @@ type CategoryContextType = {
   deleteCategory: (id: string) => void;
 };
 
-const STORAGE_KEY = 'CATEGORIES_DATA';
+const STORAGE_KEY = "CATEGORIES_DATA";
 
-const PALETTE = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#E91E63', '#00BCD4', '#795548'];
-
-const DEFAULT_CATEGORIES: Category[] = [
-  { id: 'personal', name: 'Personal', color: '#4CAF50' },
-  { id: 'work', name: 'Work', color: '#2196F3' },
-  { id: 'shopping', name: 'Shopping', color: '#FF9800' },
+const COLOR_PALETTE = [
+  "#4CAF50",
+  "#2196F3",
+  "#FF9800",
+  "#9C27B0",
+  "#E91E63",
+  "#00BCD4",
+  "#795548",
+];
+const ICON_PALETTE = [
+  "person",
+  "briefcase",
+  "cart",
+  "book",
+  "film",
+  "game-controller",
+  "home",
 ];
 
-const CategoryContext = createContext<CategoryContextType | undefined>(undefined);
+const DEFAULT_CATEGORIES: Category[] = [
+  { id: "personal", name: "Personal", color: "#4CAF50", icon: "person" },
+  { id: "work", name: "Work", color: "#2196F3", icon: "briefcase" },
+  { id: "shopping", name: "Shopping", color: "#FF9800", icon: "cart" },
+];
+
+const CategoryContext = createContext<CategoryContextType | undefined>(
+  undefined,
+);
 
 export function CategoryProvider({ children }: { children: ReactNode }) {
   const [categories, setCategories] = useState<Category[]>(DEFAULT_CATEGORIES);
@@ -35,10 +61,15 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
       try {
         const saved = await AsyncStorage.getItem(STORAGE_KEY);
         if (saved) {
-          setCategories(JSON.parse(saved));
+          const parsed: Category[] = JSON.parse(saved);
+          const migrated = parsed.map((c, index) => ({
+            ...c,
+            icon: c.icon || ICON_PALETTE[index % ICON_PALETTE.length],
+          }));
+          setCategories(migrated);
         }
       } catch (e) {
-        console.error('Failed to load categories', e);
+        console.error("Failed to load categories", e);
       } finally {
         setLoaded(true);
       }
@@ -49,22 +80,24 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!loaded) return;
     AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(categories)).catch((e) =>
-      console.error('Failed to save categories', e)
+      console.error("Failed to save categories", e),
     );
   }, [categories, loaded]);
 
   const addCategory = (name: string) => {
+    const index = categories.length % COLOR_PALETTE.length;
     const newCategory: Category = {
       id: Date.now().toString(),
       name,
-      color: PALETTE[categories.length % PALETTE.length],
+      color: COLOR_PALETTE[index],
+      icon: ICON_PALETTE[index],
     };
     setCategories((prev) => [...prev, newCategory]);
   };
 
   const renameCategory = (id: string, newName: string) => {
     setCategories((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, name: newName } : c))
+      prev.map((c) => (c.id === id ? { ...c, name: newName } : c)),
     );
   };
 
@@ -73,7 +106,9 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <CategoryContext.Provider value={{ categories, addCategory, renameCategory, deleteCategory }}>
+    <CategoryContext.Provider
+      value={{ categories, addCategory, renameCategory, deleteCategory }}
+    >
       {children}
     </CategoryContext.Provider>
   );
@@ -81,6 +116,7 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
 
 export function useCategories() {
   const context = useContext(CategoryContext);
-  if (!context) throw new Error('useCategories must be used within a CategoryProvider');
+  if (!context)
+    throw new Error("useCategories must be used within a CategoryProvider");
   return context;
 }
