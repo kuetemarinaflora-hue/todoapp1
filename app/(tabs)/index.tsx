@@ -1,12 +1,19 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, FlatList } from 'react-native';
 
 export default function App() {
   const [task, setTask] = useState('');
+  const [todos, setTodos] = useState<string[]>([]);
+
+  const addTodo = () => {
+    if (task.trim() === '') return;
+    setTodos([...todos, task]);
+    setTask('');
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>My To-Do List</Text>
+      <Text style={styles.title}>what do yo have to do today </Text>
 
       <View style={styles.inputRow}>
         <TextInput
@@ -15,8 +22,18 @@ export default function App() {
           value={task}
           onChangeText={setTask}
         />
-        <Button title="Add" onPress={() => console.log('Add pressed:', task)} />
+        <Button title="Add" onPress={addTodo} />
       </View>
+
+      <FlatList
+        data={todos}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.todoItem}>
+            <Text style={styles.todoText}>{item}</Text>
+          </View>
+        )}
+      />
     </View>
   );
 }
@@ -24,19 +41,20 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f2efef',
     paddingTop: 60,
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 30,
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
+    marginBottom: 20,
   },
   input: {
     flex: 1,
@@ -44,5 +62,13 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
     padding: 10,
+  },
+  todoItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  todoText: {
+    fontSize: 16,
   },
 });
