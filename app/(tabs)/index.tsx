@@ -1,67 +1,29 @@
-import { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 
-type Todo = {
-  id: string;
-  text: string;
-  completed: boolean;
-};
+const categories = [
+  { id: 'personal', name: 'Personal', color: '#4CAF50' },
+  { id: 'work', name: 'Work', color: '#2196F3' },
+  { id: 'shopping', name: 'Shopping', color: '#FF9800' },
+];
 
-export default function App() {
-  const [task, setTask] = useState('');
-  const [todos, setTodos] = useState<Todo[]>([]);
-
-  const addTodo = () => {
-    if (task.trim() === '') return;
-    const newTodo: Todo = {
-      id: Date.now().toString(),
-      text: task,
-      completed: false,
-    };
-    setTodos([...todos, newTodo]);
-    setTask('');
-  };
-
-  const toggleComplete = (id: string) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
-  };
-
-  const deleteTodo = (id: string) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
-  };
+export default function Home() {
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>My To-Do List</Text>
-
-      <View style={styles.inputRow}>
-        <TextInput
-          style={styles.input}
-          placeholder="Add a new task..."
-          value={task}
-          onChangeText={setTask}
-        />
-        <Button title="Add" onPress={addTodo} />
-      </View>
+      <Text style={styles.title}>My Lists</Text>
 
       <FlatList
-        data={todos}
+        data={categories}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.todoItem}>
-            <TouchableOpacity style={styles.todoTextWrapper} onPress={() => toggleComplete(item.id)}>
-              <Text style={[styles.todoText, item.completed && styles.todoTextCompleted]}>
-                {item.text}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => deleteTodo(item.id)}>
-              <Text style={styles.deleteText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={[styles.card, { borderLeftColor: item.color }]}
+            onPress={() => router.push({ pathname: '/[category]', params: { category: item.id } })}
+          >
+            <Text style={styles.cardText}>{item.name}</Text>
+          </TouchableOpacity>
         )}
       />
     </View>
@@ -81,50 +43,21 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     color: '#222',
   },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 20,
-  },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+  card: {
     backgroundColor: '#fff',
-    fontSize: 16,
-  },
-  todoItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 14,
-    marginBottom: 10,
-    backgroundColor: '#fff',
+    padding: 18,
+    marginBottom: 12,
     borderRadius: 10,
+    borderLeftWidth: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
     elevation: 2,
   },
-  todoTextWrapper: {
-    flex: 1,
-  },
-  todoText: {
-    fontSize: 16,
-    color: '#222',
-  },
-  todoTextCompleted: {
-    textDecorationLine: 'line-through',
-    color: '#aaa',
-  },
-  deleteText: {
-    color: '#e74c3c',
+  cardText: {
+    fontSize: 18,
     fontWeight: '600',
-    marginLeft: 10,
+    color: '#222',
   },
 });
