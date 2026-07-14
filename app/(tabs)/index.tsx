@@ -71,14 +71,15 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5',
     paddingTop: 60,
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 24,
+    color: '#222',
   },
   inputRow: {
     flexDirection: 'row',
@@ -89,30 +90,41 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
+    borderColor: '#ddd',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    backgroundColor: '#fff',
+    fontSize: 16,
   },
   todoItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    padding: 14,
+    marginBottom: 10,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
   },
   todoTextWrapper: {
     flex: 1,
   },
   todoText: {
     fontSize: 16,
+    color: '#222',
   },
   todoTextCompleted: {
     textDecorationLine: 'line-through',
-    color: '#999',
+    color: '#aaa',
   },
   deleteText: {
-    color: 'red',
+    color: '#e74c3c',
+    fontWeight: '600',
     marginLeft: 10,
   },
 });
