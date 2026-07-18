@@ -16,14 +16,14 @@ export type Category = {
 
 type CategoryContextType = {
   categories: Category[];
-  addCategory: (name: string) => void;
+  addCategory: (name: string, icon?: string, color?: string) => void;
   renameCategory: (id: string, newName: string) => void;
   deleteCategory: (id: string) => void;
 };
 
 const STORAGE_KEY = "CATEGORIES_DATA";
 
-const COLOR_PALETTE = [
+export const COLOR_PALETTE = [
   "#4CAF50",
   "#2196F3",
   "#FF9800",
@@ -32,7 +32,7 @@ const COLOR_PALETTE = [
   "#00BCD4",
   "#795548",
 ];
-const ICON_PALETTE = [
+export const ICON_PALETTE = [
   "person",
   "briefcase",
   "cart",
@@ -84,13 +84,13 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
     );
   }, [categories, loaded]);
 
-  const addCategory = (name: string) => {
+  const addCategory = (name: string, icon?: string, color?: string) => {
     const index = categories.length % COLOR_PALETTE.length;
     const newCategory: Category = {
       id: Date.now().toString(),
       name,
-      color: COLOR_PALETTE[index],
-      icon: ICON_PALETTE[index],
+      color: color || COLOR_PALETTE[index],
+      icon: icon || ICON_PALETTE[index],
     };
     setCategories((prev) => [...prev, newCategory]);
   };
